@@ -28,11 +28,6 @@ jobs:
           mkdir -p dist
           zip -r dist/bulk-close-tabs.zip manifest.json popup.html popup.css popup.js icons/ scripts/
 
-      - name: Create CRX
-        run: npm run build
-        env:
-          CRX_PRIVATE_KEY: ${{ secrets.CRX_PRIVATE_KEY }}
-
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
