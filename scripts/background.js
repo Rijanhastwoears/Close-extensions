@@ -1,5 +1,9 @@
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.storage.local.set({ domains: [] });
+  chrome.storage.local.get(['domains'], (result) => {
+    if (result.domains === undefined) {
+      chrome.storage.local.set({ domains: [] });
+    }
+  });
   chrome.contextMenus.create({
     id: "open_tab_cleaner_settings",
     title: "Bulk Close tabs Settings",

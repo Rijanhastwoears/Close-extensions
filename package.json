@@ -1,0 +1,13 @@
+{
+  "name": "bulk-close-tabs",
+  "version": "1.0.0",
+  "description": "Bulk close tabs using substring matching",
+  "scripts": {
+    "lint": "eslint .",
+    "build": "node scripts/build.js"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0",
+    "crx3": "^1.1.3"
+  }
+}
