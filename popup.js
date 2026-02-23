@@ -2,11 +2,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const domainList = document.getElementById('domainList');
   const domainInput = document.getElementById('domainInput');
   const addButton = document.getElementById('addDomain');
+  const closeTabsButton = document.getElementById('closeTabs');
 
   function renderDomains() {
     chrome.storage.local.get(['domains'], (result) => {
       const domains = result.domains || [];
-      domainList.innerHTML = ''; // Clear the list
+      domainList.innerHTML = '';
       domains.forEach(domain => createDomainItem(domain));
     });
   }
@@ -23,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
       chrome.storage.local.get(['domains'], (result) => {
         const updatedDomains = (result.domains || []).filter(d => d !== domain);
         chrome.storage.local.set({ domains: updatedDomains }, () => {
-          renderDomains(); // Re-render the list
+          renderDomains();
         });
       });
     });
@@ -37,12 +38,31 @@ document.addEventListener('DOMContentLoaded', () => {
       chrome.storage.local.get(['domains'], (result) => {
         const updatedDomains = [...new Set([...(result.domains || []), domain])];
         chrome.storage.local.set({ domains: updatedDomains }, () => {
-          renderDomains(); // Re-render the list
+          renderDomains();
           domainInput.value = '';
         });
       });
     }
   });
 
-  renderDomains(); // Initial render
+  closeTabsButton.addEventListener('click', async () => {
+    const { domains } = await chrome.storage.local.get(['domains']);
+    const targetDomains = domains || [];
+    const tabs = await chrome.tabs.query({});
+    const tabsToClose = tabs.filter(tab => {
+      try {
+        const hostname = new URL(tab.url).hostname.toLowerCase();
+        return targetDomains.some(domain => hostname.includes(domain.toLowerCase()));
+      } catch {
+        return false;
+      }
+    }).map(tab => tab.id);
+
+    if (tabsToClose.length > 0) {
+      await chrome.tabs.remove(tabsToClose);
+      window.close();
+    }
+  });
+
+  renderDomains();
 });

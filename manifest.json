@@ -9,7 +9,8 @@
     "service_worker": "scripts/background.js"
   },
   "action": {
-    "default_icon": "icons/icon.png"
+    "default_icon": "icons/icon.png",
+    "default_popup": "popup.html"
   },
   "commands": {
     "bulk-close-tabs": {
