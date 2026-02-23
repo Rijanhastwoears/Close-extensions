@@ -1,4 +1,4 @@
-import crx3 from 'crx3';
+import { ChromeExtension } from 'crx';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -26,10 +26,16 @@ if (!privateKey) {
   console.log(`Key saved to: ${keyPath}`);
 }
 
+const crx = new ChromeExtension({
+  privateKey,
+  rootDir
+});
+
 const outputPath = path.join(rootDir, 'dist', 'bulk-close-tabs.crx');
 fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 
-crx3(rootDir, { privateKey, crxVersion: 3 })
+crx.load(path.join(rootDir, 'manifest.json'))
+  .then(crx => crx.pack())
   .then(crxBuffer => {
     fs.writeFileSync(outputPath, crxBuffer);
     console.log(`CRX created: ${outputPath}`);
