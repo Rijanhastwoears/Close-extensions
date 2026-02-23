@@ -26,22 +26,13 @@ if (!privateKey) {
   console.log(`Key saved to: ${keyPath}`);
 }
 
-const files = [
-  'manifest.json',
-  'popup.html',
-  'popup.css',
-  'popup.js',
-  'icons/icon.png',
-  'scripts/background.js'
-].map(f => ({
-  path: f,
-  content: fs.readFileSync(path.join(rootDir, f))
-}));
+const manifestPath = path.join(rootDir, 'manifest.json');
 
-crx3(files, { privateKey, crxVersion: 3 })
+const outputPath = path.join(rootDir, 'dist', 'bulk-close-tabs.crx');
+fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+
+crx3(manifestPath, { privateKey, crxVersion: 3 })
   .then(crxBuffer => {
-    const outputPath = path.join(rootDir, 'dist', 'bulk-close-tabs.crx');
-    fs.mkdirSync(path.dirname(outputPath), { recursive: true });
     fs.writeFileSync(outputPath, crxBuffer);
     console.log(`CRX created: ${outputPath}`);
   })

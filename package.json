@@ -1,6 +1,7 @@
 {
   "name": "bulk-close-tabs",
   "version": "1.0.0",
+  "type": "module",
   "description": "Bulk close tabs using substring matching",
   "scripts": {
     "lint": "eslint .",
