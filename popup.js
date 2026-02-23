@@ -50,6 +50,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const targetDomains = domains || [];
     const tabs = await chrome.tabs.query({});
     const tabsToClose = tabs.filter(tab => {
+      if (isBlankTab(tab)) {
+        return true;
+      }
       try {
         const hostname = new URL(tab.url).hostname.toLowerCase();
         return targetDomains.some(domain => hostname.includes(domain.toLowerCase()));
@@ -63,6 +66,30 @@ document.addEventListener('DOMContentLoaded', () => {
       window.close();
     }
   });
+
+  function isBlankTab(tab) {
+    const url = tab.url || '';
+    const blankPatterns = [
+      'chrome://newtab/',
+      'about:blank',
+      'edge://newtab/',
+      'about:newtab',
+      'chrome://blank/',
+      'edge://blank/'
+    ];
+    if (blankPatterns.includes(url)) {
+      return true;
+    }
+    try {
+      const parsedUrl = new URL(url);
+      if (parsedUrl.hostname === '' || parsedUrl.hostname === 'newtab') {
+        return true;
+      }
+    } catch {
+      return true;
+    }
+    return false;
+  }
 
   renderDomains();
 });
