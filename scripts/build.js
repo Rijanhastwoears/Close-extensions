@@ -26,12 +26,10 @@ if (!privateKey) {
   console.log(`Key saved to: ${keyPath}`);
 }
 
-const manifestPath = path.join(rootDir, 'manifest.json');
-
 const outputPath = path.join(rootDir, 'dist', 'bulk-close-tabs.crx');
 fs.mkdirSync(path.dirname(outputPath), { recursive: true });
 
-crx3(manifestPath, { privateKey, crxVersion: 3 })
+crx3(rootDir, { privateKey, crxVersion: 3 })
   .then(crxBuffer => {
     fs.writeFileSync(outputPath, crxBuffer);
     console.log(`CRX created: ${outputPath}`);
